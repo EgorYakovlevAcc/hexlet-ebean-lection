@@ -9,11 +9,11 @@ import io.javalin.core.validation.ValidationError;
 import io.javalin.core.validation.Validator;
 import io.javalin.http.Handler;
 import model.User;
+import pojo.Error;
 
 import java.io.PrintWriter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AccountController {
     public static Handler getAccounts = ctx -> {
@@ -29,7 +29,6 @@ public class AccountController {
     public static Handler createAccount = ctx -> {
 //        User user = ctx.bodyAsClass(User.class);
         Validator<String> nameValidator = ctx.formParamAsClass("name", String.class)
-                .check(value -> value.length() > 7, "Amount of chars in name should be grater then 7")
                 .check(value -> {
                     if (value != null) {
                         if (value.length() > 0) {
@@ -37,23 +36,40 @@ public class AccountController {
                         }
                     }
                     return false;
-                }, "Name cannot be empty");
-        Map<String, List<ValidationError<?>>> errors = JavalinValidation.collectErrors(nameValidator);
+                }, "Name cannot be empty")
+                .check(value -> value.length() > 7, "Amount of chars in name should be grater then 7");
 
-        String lastname = ctx.formParamAsClass("lastname", String.class).get();
-        Date birthdate = ctx.formParamAsClass("birthdate", Date.class).get();
+        Validator<String> lastnameValidator = ctx.formParamAsClass("lastname", String.class)
+                .check(Objects::nonNull, "Lastname cannot be null")
+                .check(value -> {
+                    if (value != null) {
+                        char firstChar = value.charAt(0);
+                        return Character.isUpperCase(firstChar);
+
+                    }
+                    return false;
+                }, "First letter should be uppercase!");
+
+        Map<String, List<ValidationError<?>>> errors = JavalinValidation.collectErrors(nameValidator, lastnameValidator);
 
         PrintWriter printWriter = ctx.res.getWriter();
 
+        ObjectMapper objectMapper = new ObjectMapper();
         if (!errors.isEmpty()) {
-            printWriter.write(String.valueOf(errors));
+            List<Error> errorList = errors.entrySet().stream()
+                    .map(Map.Entry::getValue)
+                    .flatMap(List::stream)
+                    .map(ValidationError::getMessage)
+                    .map(Error::new)
+                    .collect(Collectors.toList());
+            printWriter.write(String.valueOf(objectMapper.writeValueAsString(errorList)));
             return;
         }
 
 
         User user = new User();
-        user.setBirthdate(birthdate);
-        user.setLastname(lastname);
+//        user.setBirthdate(birthdate);
+        user.setLastname(lastnameValidator.get());
         user.setName(nameValidator.get());
 
         EbeanServer ebeanServer = DBServerInstance.getInstance();

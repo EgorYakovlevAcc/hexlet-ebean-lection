@@ -3,6 +3,7 @@ package db;
 import io.ebean.EbeanServer;
 import io.ebean.EbeanServerFactory;
 import io.ebean.config.ServerConfig;
+import model.User;
 
 import java.util.Properties;
 
@@ -27,9 +28,9 @@ public class DBServerInstance {
 //        properties.put("ebean.db.ddl.run", "true");
         properties.put("datasource.db.username", "postgres");
         properties.put("datasource.db.password", "root");
-        properties.put("datasource.db.databaseUrl", "jdbc:postgresql://localhost:5432/hexlet_example_db");
+        properties.put("datasource.db.databaseUrl", "jdbc:postgresql://localhost:5432/postgres");
         properties.put("datasource.db.databaseDriver", "org.postgresql.Driver");
-
+        cfg.addClass(User.class);
         cfg.loadFromProperties(properties);
         return EbeanServerFactory.create(cfg);
     }
