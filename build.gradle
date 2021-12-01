@@ -12,13 +12,36 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.ebean:ebean:11.22.4'
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
-    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
-    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+
+    implementation 'io.javalin:javalin:4.0.1'
+    implementation 'org.slf4j:slf4j-simple:1.7.31'
+    implementation 'org.thymeleaf:thymeleaf:3.0.12.RELEASE'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
+    implementation 'com.h2database:h2:1.4.200'
+    implementation 'commons-validator:commons-validator:1.7'
+
+    implementation 'io.ebean:ebean:12.11.5'
+    implementation 'io.ebean:ebean-ddl-generator:12.11.5'
+    implementation 'io.ebean:ebean-querybean:12.11.5'
+    implementation 'io.ebean:ebean-migration:12.11.2'
+    implementation 'io.ebean:ebean-annotation:7.3'
+    annotationProcessor 'io.ebean:querybean-generator:12.11.5'
+
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.5'
+    implementation 'javax.activation:activation:1.1.1'
+
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
-    compile 'io.javalin:javalin:4.1.0'
-    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0-M1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.0-M1'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'io.ebean:ebean-test:12.11.5'
+    testImplementation 'com.konghq:unirest-java:3.13.0'
+
+}
+
+test {
+    useJUnitPlatform()
 }

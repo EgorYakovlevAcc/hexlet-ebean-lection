@@ -23,9 +23,9 @@ public class Main {
     }
 
     private static void addRoutes(Javalin app) {
-        app.get("/", RootController.welcome);
+        app.get("/v1.0/", RootController.welcome);
         app.routes(() -> {
-            path("users/", () -> {
+            path("/v1.0/users/", () -> {
                 get(AccountController.getAccounts);
                 post(AccountController.createAccount);
                 put(AccountController.editAccount);
